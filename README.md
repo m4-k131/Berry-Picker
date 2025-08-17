@@ -12,38 +12,26 @@ Choose one of enlightningthe following methods to get started.
 
 This method is ideal for a fresh Raspberry Pi OS installation, as it uses pre-installed tools.
 
-1.  **Download the repository:**
+1.  **Download, unzip and navigate:**
     ```bash
     curl -LO https://github.com/m4-k131/Berry-Picker/archive/refs/heads/main.zip
-    ```
-
-2.  **Unzip the file:**
-    ```bash
     unzip main.zip
-    ```
-
-3.  **Navigate into the directory:**
-    *Note: The directory will be named `Berry-Picker-main`.*
-    ```bash
     cd Berry-Picker-main
     ```
 
-4.  **Proceed to the Configuration step below.**
+2.  **Proceed to the Configuration step below.**
 
 ### Method 2: Using `git`
 
 This method is useful if you already have `git` installed.
 
-1.  **Clone the repository:**
+1.  **Clone and navigate:**
     ```bash
     git clone https://github.com/m4-k131/Berry-Picker.git
-    ```
-
-2.  **Navigate into the directory:**
-    ```bash
     cd Berry-Picker
     ```
-3.  **Proceed to the Configuration step below.**
+
+2.  **Proceed to the Configuration step below.**
 
 ---
 
@@ -51,36 +39,19 @@ This method is useful if you already have `git` installed.
 
 After following one of the installation methods, complete the setup with these steps:
 
-1.  **Create your environment file:**
-    Copy the example `.env` file. This file is ignored by git, so your private keys and passwords will not be committed.
-    ```bash
-    cp .env.example .env
-    ```
-
-2.  **Edit the environment file:**
+1.  **Edit the environment file:**
     Use a text editor like `nano` to add your credentials and authorized SSH keys.
     ```bash
     nano .env
     ```
     Press `Ctrl+X`, then `Y`, then `Enter` to save and exit.
 
-3.  **Make the setup script executable:**
+2.  **Setup:**
     ```bash
     chmod +x setup.sh
-    ```
-
-4.  **Run the script:**
-    The script will prompt for your password to install system packages.
-    ```bash
     ./setup.sh
-    ```
-
-5.  **Reload your shell:**
-    To use the new aliases, you must reload your shell's configuration.
-    ```bash
     source ~/.bashrc
     ```
-
 ---
 
 ## Usage
