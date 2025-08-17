@@ -119,7 +119,7 @@ fi
 
 # --- Optional: Setup Surfshark OpenVPN ---
 # Uncomment the following line to run the Surfshark setup script.
-# sudo ./setup_surfshark_openvpn.sh
+sudo ./setup_surfshark_openvpn.sh
 
 
 print_step "Setup Complete!"
