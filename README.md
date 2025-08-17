@@ -14,7 +14,7 @@ This method is ideal for a fresh Raspberry Pi OS installation, as it uses pre-in
 
 1.  **Download the repository:**
     ```bash
-    curl -LO [https://github.com/m4-k131/Berry-Picker/archive/refs/heads/main.zip](https://github.com/m4-k131/Berry-Picker/archive/refs/heads/main.zip)
+    curl -LO https://github.com/m4-k131/Berry-Picker/archive/refs/heads/main.zip
     ```
 
 2.  **Unzip the file:**
@@ -36,7 +36,7 @@ This method is useful if you already have `git` installed.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/m4-k131/Berry-Picker.git](https://github.com/m4-k131/Berry-Picker.git)
+    git clone https://github.com/m4-k131/Berry-Picker.git
     ```
 
 2.  **Navigate into the directory:**
