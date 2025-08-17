@@ -6,7 +6,7 @@ A bash script to quickly configure a Raspberry Pi for web crawling and scraping.
 
 ## Installation
 
-Choose one of the following methods to get started.
+Choose one of enlightningthe following methods to get started.
 
 ### Method 1: Using `curl` + `unzip` (Recommended)
 
