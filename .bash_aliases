@@ -64,3 +64,36 @@ alias vpn_status="ps aux | grep '[o]penvpn'"
 # 4. Screen QoL Alias
 # Re-attach to the first available detached screen session
 alias sattach='screen -r'
+
+# Checks Raspberry Pi power and thermal status
+check_pi() {
+    local throttled_code
+    throttled_code=$(vcgencmd get_throttled | cut -d'=' -f2)
+    local dec_code
+    dec_code=$(printf "%d" "$throttled_code")
+
+    echo "----------------------------------------"
+    echo "Raspberry Pi Status Check"
+    echo "Throttled Code: $throttled_code"
+    echo "----------------------------------------"
+
+    if [ "$dec_code" -eq 0 ]; then
+        echo "✅ STATUS: OK. No issues detected."
+        return
+    fi
+
+    echo "⚠️  STATUS: Issues detected!"
+
+    # --- Current Issues (Active Now) ---
+    if (( (dec_code & 1) != 0 )); then echo "  - 🚨 Under-voltage NOW"; fi
+    if (( (dec_code & 2) != 0 )); then echo "  - 🚨 ARM frequency capped NOW"; fi
+    if (( (dec_code & 4) != 0 )); then echo "  - 🚨 Throttled NOW"; fi
+    if (( (dec_code & 8) != 0 )); then echo "  - 🔥 Soft temperature limit NOW"; fi
+
+    # --- Historical Issues (Since last boot) ---
+    if (( (dec_code & 0x10000) != 0 )); then echo "  - ⚡ Under-voltage HAS occurred"; fi
+    if (( (dec_code & 0x20000) != 0 )); then echo "  - ⚡ ARM frequency capping HAS occurred"; fi
+    if (( (dec_code & 0x40000) != 0 )); then echo "  - ⚡ Throttling HAS occurred"; fi
+    if (( (dec_code & 0x80000) != 0 )); then echo "  - 🌡️ Soft temperature limit HAS occurred"; fi
+    echo "----------------------------------------"
+}
