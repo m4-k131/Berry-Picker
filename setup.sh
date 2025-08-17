@@ -5,11 +5,10 @@ set -e
 # --- Helper Functions ---
 print_step() {
     echo "----------------------------------------"
-    echo "$1"
+    echo "➡️  $1"
     echo "----------------------------------------"
 }
 
-# --- Main Execution ---
 if [ "$EUID" -eq 0 ]; then
   echo "Please do not run this script as root. It will prompt for sudo password when needed."
   exit 1
@@ -17,15 +16,15 @@ fi
 
 print_step "Starting Raspberry Pi Crawler Setup (Berry-Picker)"
 
-# System Update and Upgrade
+# 1. System Update and Upgrade
 print_step "Updating and upgrading system packages..."
 sudo apt-get update && sudo apt-get full-upgrade -y
 
-# Install Core Dependencies
+# 2. Install Core Dependencies
 print_step "Installing essential packages: python, pip, venv, screen, firefox, and jq..."
 sudo apt-get install -y python3-pip python3-venv screen firefox-esr jq
 
-# Install GeckoDriver (for Selenium)
+# 3. Install GeckoDriver (for Selenium)
 print_step "Downloading and installing the latest GeckoDriver for ARM..."
 
 GECKODRIVER_URL=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.assets[] | select(.name | contains("arm7hf")) | .browser_download_url')
@@ -38,15 +37,13 @@ fi
 echo "Found GeckoDriver URL: $GECKODRIVER_URL"
 wget -O geckodriver.tar.gz "$GECKODRIVER_URL"
 
-# Extract and install
 tar -xzf geckodriver.tar.gz
 sudo mv geckodriver /usr/local/bin/
 echo "GeckoDriver installed successfully to /usr/local/bin/"
 
-# Clean up downloaded file
 rm geckodriver.tar.gz
 
-#Setup SSH Keys
+# 4. Setup SSH Keys
 print_step "Setting up SSH keys..."
 SSH_DIR="$HOME/.ssh"
 PRIVATE_KEY_PATH="$SSH_DIR/id_rsa"
@@ -71,7 +68,7 @@ echo "New SSH key generated for this device."
 ENV_FILE=".env"
 if [ -f "$ENV_FILE" ]; then
     print_step "Found .env file. Checking for authorized keys..."
-    set -a # automatically export all variables
+    set -a 
     source "$ENV_FILE"
     set +a
 
@@ -87,19 +84,19 @@ if [ -f "$ENV_FILE" ]; then
 else
     echo "No .env file found. Skipping authorized key setup."
 fi
-fi
 
 
-#Create Python Virtual Environment
+# 5. Create Python Virtual Environment
 VENV_DIR="$HOME/venv/crawler"
 print_step "Creating Python virtual environment at $VENV_DIR..."
 mkdir -p "$(dirname "$VENV_DIR")"
 python3 -m venv "$VENV_DIR"
 echo "Virtual environment created."
 
-#Install Python Packages from requirements.txt
+# 6. Install Python Packages from requirements.txt
 REQUIREMENTS_FILE="requirements.txt"
 print_step "Installing Python packages from $REQUIREMENTS_FILE..."
+
 if [ -f "$REQUIREMENTS_FILE" ]; then
     "$VENV_DIR/bin/pip" install -r "$REQUIREMENTS_FILE"
     echo "Python packages installed."
@@ -107,26 +104,29 @@ else
     echo "WARNING: $REQUIREMENTS_FILE not found. Skipping Python package installation."
 fi
 
-# Overwrite .bashrc
-BASHRC_FILE="bashrc"
-print_step "Updating .bashrc..."
+# 7. Add Custom Bash Aliases
+ALIASES_FILE="bash_aliases"
+print_step "Adding custom aliases to ~/.bash_aliases..."
 
-if [ -f "$BASHRC_FILE" ]; then
-    echo "Backing up current .bashrc to ~/.bashrc.bak"
-    cp ~/.bashrc ~/.bashrc.bak
-    
-    echo "Copying new bashrc file to home directory..."
-    cp ./"$BASHRC_FILE" ~/.bashrc
-    echo ".bashrc updated."
+if [ -f "$ALIASES_FILE" ]; then
+    echo "" >> ~/.bash_aliases # Add a newline for separation
+    cat ./"$ALIASES_FILE" >> ~/.bash_aliases
+    echo "Custom aliases added."
 else
-    echo "WARNING: 'bashrc' file not found in repo. Skipping update."
+    echo "WARNING: '$ALIASES_FILE' file not found in repo. Skipping."
 fi
+
+
+# --- Optional: Setup Surfshark OpenVPN ---
+# Uncomment the following line to run the Surfshark setup script.
+# sudo ./setup_surfshark_openvpn.sh
 
 
 print_step "Setup Complete!"
 echo "----------------------------------------"
-echo "To apply the new .bashrc changes, please run:"
+echo "To apply the new aliases, please run:"
 echo "source ~/.bashrc"
 echo "or restart your terminal session."
 echo ""
-echo "You can activate the crawler's environment with the 'crawler' command."
+echo "You can activate the crawler's environment with the 'start_crawler' command."
+
