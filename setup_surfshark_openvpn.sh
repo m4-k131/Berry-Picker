@@ -33,6 +33,15 @@ fi
 # --- Main Execution ---
 echo -e "${GREEN}--- Surfshark OpenVPN Setup ---${NC}"
 
+# 0. Aggressive Cleanup of any previous connections
+echo -e "\n${YELLOW}Stopping and cleaning up any old OpenVPN connections...${NC}"
+sudo systemctl stop 'openvpn-client@*.service' >/dev/null 2>&1
+sudo killall openvpn >/dev/null 2>&1
+sleep 1 # Give the system a moment to release resources
+
+# 1. Unzip the configuration files...
+# ... rest of your script
+
 # 1. Unzip the configuration files
 echo -e "${YELLOW}Unzipping '$CONFIG_ZIP' into './$CONFIG_DIR/'...${NC}"
 unzip -o "$CONFIG_ZIP" -d "$CONFIG_DIR" > /dev/null
