@@ -30,24 +30,13 @@ sudo apt-get install -y git python3-pip python3-venv screen firefox-esr jq
 
 # 3. Install GeckoDriver (for Selenium)
 print_step "Downloading and installing the latest GeckoDriver for ARM..."
+GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux-aarch64.tar.gz"
 
-# Get the latest geckodriver download URL for arm7hf architecture from GitHub API
-GECKODRIVER_URL=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.assets[] | select(.name | contains("arm7hf")) | .browser_download_url')
-
-if [ -z "$GECKODRIVER_URL" ] || [ "$GECKODRIVER_URL" == "null" ]; then
-    echo "❌ ERROR: Could not find GeckoDriver URL for arm7hf. Exiting."
-    exit 1
-fi
-
-echo "Found GeckoDriver URL: $GECKODRIVER_URL"
 wget -O geckodriver.tar.gz "$GECKODRIVER_URL"
 
-# Extract and install
 tar -xzf geckodriver.tar.gz
 sudo mv geckodriver /usr/local/bin/
 echo "GeckoDriver installed successfully to /usr/local/bin/"
-
-# Clean up downloaded file
 rm geckodriver.tar.gz
 
 # 4. Setup SSH Keys
@@ -56,7 +45,6 @@ SSH_DIR="$HOME/.ssh"
 PRIVATE_KEY_PATH="$SSH_DIR/id_rsa"
 PUBLIC_KEY_PATH="$SSH_DIR/id_rsa.pub"
 
-# Create .ssh directory if it doesn't exist
 mkdir -p "$SSH_DIR"
 chmod 700 "$SSH_DIR"
 
@@ -73,7 +61,6 @@ fi
 echo "Generating a new SSH key..."
 ssh-keygen -t rsa -b 4096 -f "$PRIVATE_KEY_PATH" -N "" # -N "" for no passphrase
 echo "New SSH key generated for this device."
-
 
 # Add authorized public keys from .env file for incoming connections
 ENV_FILE=".env"
@@ -97,12 +84,10 @@ else
     echo "No .env file found. Skipping authorized key setup."
 fi
 
-
 # 5. Create Python Virtual Environment
 VENV_DIR="$HOME/venv/crawler"
 print_step "Creating Python virtual environment at $VENV_DIR..."
 
-# Create the parent directory if it doesn't exist
 mkdir -p "$(dirname "$VENV_DIR")"
 
 # Create the virtual environment
@@ -135,7 +120,7 @@ else
 fi
 
 
-print_step "✅ Setup Complete!"
+print_step "Setup Complete!"
 echo "----------------------------------------"
 echo "To apply the new aliases, please run:"
 echo "source ~/.bashrc"
