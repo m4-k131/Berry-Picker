@@ -30,6 +30,8 @@ sudo apt-get install -y git python3-pip python3-venv screen firefox-esr jq firef
 
 # 3. Install GeckoDriver (for Selenium)
 print_step "Downloading and installing the latest GeckoDriver for ARM..."
+GECKODRIVER_URL="https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux-aarch64.tar.gz"
+
 GECKODRIVER_URL=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r '.assets[] | select(.name | contains("arm7hf")) | .browser_download_url')
 
 if [ -z "$GECKODRIVER_URL" ] || [ "$GECKODRIVER_URL" == "null" ]; then
@@ -40,7 +42,6 @@ fi
 echo "Found GeckoDriver URL: $GECKODRIVER_URL"
 wget -O geckodriver.tar.gz "$GECKODRIVER_URL"
 
-# Extract and install
 tar -xzf geckodriver.tar.gz
 sudo mv geckodriver /usr/local/bin/
 echo "GeckoDriver installed successfully to /usr/local/bin/"
@@ -93,6 +94,7 @@ fi
 # 5. Create Python Virtual Environment
 VENV_DIR="$HOME/venv/crawler"
 print_step "Creating Python virtual environment at $VENV_DIR..."
+
 mkdir -p "$(dirname "$VENV_DIR")"
 python3 -m venv "$VENV_DIR"
 echo "Virtual environment created."
@@ -122,7 +124,7 @@ else
 fi
 
 
-print_step "✅ Setup Complete!"
+print_step "Setup Complete!"
 echo "----------------------------------------"
 echo "To apply the new aliases, please run:"
 echo "source ~/.bashrc"
