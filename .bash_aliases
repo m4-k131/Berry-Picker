@@ -97,3 +97,34 @@ check_pi() {
     if (( (dec_code & 0x80000) != 0 )); then echo "  - 🌡️ Soft temperature limit HAS occurred"; fi
     echo "----------------------------------------"
 }
+
+# To overwrite the log file.
+# Usage: tout <logfile> <command> [command_args...]
+tout() {
+    # Check if we have at least a logfile and a command.
+    if [ "$#" -lt 2 ]; then
+        echo "Usage: tout <logfile> <command> [args...]" >&2
+        return 1
+    fi
+
+    local logfile="$1" # The first argument is the log file.
+    shift             # Remove the first argument from the list.
+
+    # Now, execute the rest of the arguments ("$@") as the command,
+    # with the redirection and pipe applied.
+    "$@" 2>&1 | tee "$logfile"
+}
+
+# To append to the log file (a for append).
+# Usage: touta <logfile> <command> [command_args...]
+touta() {
+    if [ "$#" -lt 2 ]; then
+        echo "Usage: touta <logfile> <command> [args...]" >&2
+        return 1
+    fi
+
+    local logfile="$1"
+    shift
+
+    "$@" 2>&1 | tee -a "$logfile"
+}
